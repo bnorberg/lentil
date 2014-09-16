@@ -3,6 +3,7 @@
 lentil is a Ruby on Rails Engine that supports the harvesting of images from Instagram and provides several browsing views, mechanisms for sharing, tools for users to select their favorite images, an administrative interface for moderating images, and a system for harvesting images and submitting donor agreements in preparation of ingest into external repositories. Built according to the principles of responsive design, lentil is designed for use on mobile devices, tablets, desktops, and larger screens.
 
 [![Build Status](https://travis-ci.org/NCSU-Libraries/lentil.png)](https://travis-ci.org/NCSU-Libraries/lentil)
+[![Gem Version](https://badge.fury.io/rb/lentil.png)](http://badge.fury.io/rb/lentil)
 
 ## History
 
@@ -14,7 +15,7 @@ Although we are using this gem in production, **this gem should be considered an
 
 ## Installation
 
-> **Note:** lentil has not been tested with Ruby 2.x.
+lentil has been tested under Ruby 1.9.3 and 2.1.0.
 
 ### Add lentil and therubyracer (or another ExecJS runtime) to your Gemfile and `bundle`
 
@@ -134,6 +135,16 @@ div.header {
     background: #0C1021 image-url("nav/example_08.jpg");
 }
 ```
+
+## Special displays
+
+### Embeddable iframe view
+
+This is a simple responsive non-interactive image grid that is intended to be embedded as an iframe. You can find this at `http://YOUR_HOST/images/iframe`.
+
+### Large animated view
+
+This is an example of an animated image grid that is designed for non-interactive displays. We have used customized versions of this on e-boards as well as very large video walls. This view will require some customization based on your project and target display. You can find this at `http://YOUR_HOST/images/animate`.
 
 ## Testing
 

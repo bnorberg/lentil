@@ -7,6 +7,12 @@ require "lentil"
 
 module Dummy
   class Application < Rails::Application
+
+    # Inserted by lentil
+    I18n.enforce_available_locales = true
+    config.assets.precompile += %w( lentil/iframe.js lentil/iframe.css )
+    # End of lentil changes
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -28,6 +34,8 @@ module Dummy
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+  
+    I18n.enforce_available_locales = false
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

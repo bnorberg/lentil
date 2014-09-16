@@ -36,11 +36,28 @@ require 'test_helper'
 
 class ImageTest < ActiveSupport::TestCase
 
-  test "Image should have a tag" do
+  test "Image should have tags" do
+    image = lentil_images(:one)
+
+    assert image.tags.size > 0, "Expected at least one tag"
+  end
+
+  test "Image should have a service tag" do
     image = lentil_images(:one)
     tag = lentil_tags(:hunttesting)
+    service_tags = image.service_tags
 
-    assert_equal tag.name, image.tags.first.name
+    assert service_tags.size > 0, "Expected at least one service tag"
+    assert_equal tag.name, service_tags.first.name
+  end
+
+  test "Image should have a staff tag" do
+    image = lentil_images(:one)
+    tag = lentil_tags(:hunttesting_staff)
+    staff_tags = image.staff_tags
+
+    assert staff_tags.size > 0, "Expected at least one staff tag"
+    assert_equal tag.name, staff_tags.first.name
   end
 
   test "Image should have a license" do
@@ -48,5 +65,30 @@ class ImageTest < ActiveSupport::TestCase
     license = lentil_licenses(:one)
 
     assert_equal license.name, image.licenses.first.name
+  end
+
+  test "Image should have valid urls" do
+    image = lentil_images(:one)
+
+    invalid_urls = [
+      'instagram.com',
+      '',
+      nil
+    ]
+
+    valid_urls = [
+      'http://',
+      'https://'
+    ]
+
+    invalid_urls.each do |new_url|
+      image.url = new_url
+      assert_equal image.valid?, false
+    end
+
+    valid_urls.each do |new_url|
+      image.url = new_url
+      assert_equal image.valid?, true
+    end
   end
 end

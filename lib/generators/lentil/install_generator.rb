@@ -8,6 +8,21 @@ module Lentil
         remove_file('public/index.html')
       end
 
+      desc 'insert lentil config comments'
+      def lentil_config_comments
+        insert_into_file "config/application.rb", "\n    # Inserted by lentil\n    # End of lentil changes\n\n", :after => "class Application < Rails::Application\n"
+      end
+
+      desc 'precompile additional assets'
+      def precompile_assets
+        insert_into_file "config/application.rb", "    config.assets.precompile += %w( lentil/iframe.js lentil/iframe.css addanimatedimages.js animatedimages/css/style.css )\n", :after => "# Inserted by lentil\n"
+      end
+
+      desc 'do not enforce available locales'
+      def set_enforce_available_locales
+        insert_into_file "config/application.rb", "    I18n.enforce_available_locales = true\n", :after => "# Inserted by lentil\n"
+      end
+
       desc 'install migrations'
       def install_migrations
         rake "lentil:install:migrations"
@@ -20,9 +35,9 @@ module Lentil
         rake "db:seed"
       end
 
-      desc 'create devise initializer'
-      def create_devise_initializer
-        copy_file 'devise.rb', 'config/initializers/devise.rb'
+      desc 'install_devise_files'
+      def install_devise_files
+        generate 'devise:install'
       end
 
       desc 'install active_admin'

@@ -61,6 +61,7 @@ class Lentil::Image < ActiveRecord::Base
   default_scope where("failed_file_checks < 3")
 
   validates_uniqueness_of :external_identifier, :scope => :user_id
+  validates :url, :format => URI::regexp(%w(http https))
 
   def self.search(page, number_to_show = nil)
     unless number_to_show.nil?
@@ -93,7 +94,7 @@ class Lentil::Image < ActiveRecord::Base
   def service_tags
     begin
       tag_ids = self.taggings.where(:staff_tag => false).pluck(:tag_id)
-      tags = Tag.find(tag_ids).sort_by(&:name)
+      tags = Lentil::Tag.find(tag_ids).sort_by(&:name)
     rescue
       Rails.logger.error "Error retrieving service_tags"
       tags = []
@@ -103,7 +104,7 @@ class Lentil::Image < ActiveRecord::Base
   def staff_tags
     begin
       tag_ids = self.taggings.where(:staff_tag => true).pluck(:tag_id)
-      tags = Tag.find(tag_ids).sort_by(&:name)
+      tags = Lentil::Tag.find(tag_ids).sort_by(&:name)
     rescue
       Rails.logger.error "Error retrieving staff_tags"
       tags = []
@@ -138,16 +139,43 @@ class Lentil::Image < ActiveRecord::Base
     self.wins_count + self.losses_count
   end
 
+  # legacy
   def image_url
-    if long_url.blank?
-      url + 'media/?size=l'
+    large_url
+  end
+
+  # legacy
+  def jpeg
+    large_url
+  end
+
+  def protocol_relative_url
+    # instagr.am returns 301 to instagram.com and invalid SSL certificate
+    url.sub(/^http:/, '').sub(/\/\/instagr\.am/, '//instagram.com')
+  end
+
+  def large_url(protocol_relative = true)
+    if protocol_relative
+      protocol_relative_url + 'media/?size=l'
     else
-      long_url
+      url + 'media/?size=l'
     end
   end
 
-  def jpeg
-    image_url
+  def medium_url(protocol_relative = true)
+    if protocol_relative
+      protocol_relative_url + 'media/?size=m'
+    else
+      url + 'media/?size=m'
+    end
+  end
+
+  def thumbnail_url(protocol_relative = true)
+    if protocol_relative
+      protocol_relative_url + 'media/?size=t'
+    else
+      url + 'media/?size=t'
+    end
   end
 
   States = {

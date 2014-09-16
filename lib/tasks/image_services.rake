@@ -39,7 +39,7 @@ namespace :lentil do
       Lentil::Service.where(:name => args[:image_service]).first.images.where(:file_harvested_date => nil).
         order("file_harvest_failed ASC").limit(num_to_harvest).each do |image|
         begin
-          raise "Desination directory does not exist or is not a directory: #{base_dir}" unless File.directory?(base_dir)
+          raise "Destination directory does not exist or is not a directory: #{base_dir}" unless File.directory?(base_dir)
 
           image_file_path = "#{base_dir}/#{image.service.name}"
 
@@ -54,10 +54,11 @@ namespace :lentil do
         end
 
         begin
-          image_data = harvester.harvest_image_data(image)
           # TODO: Currently expects JPEG
           image_file_path += "/#{image.external_identifier}.jpg"
-          raise "Image file already exists, will not overwrite" if File.exist?(image_file_path)
+          raise "Image file already exists, will not overwrite: #{image_file_path}" if File.exist?(image_file_path)
+
+          image_data = harvester.harvest_image_data(image)
 
           File.open(image_file_path, "wb") do |f|
             f.write image_data
@@ -65,7 +66,7 @@ namespace :lentil do
 
           image.file_harvested_date = DateTime.now
           image.save
-          puts "Harvested image #{image.id}"
+          puts "Harvested image #{image.id}, #{image_file_path}"
         rescue => e
           image.file_harvest_failed += 1
           image.save
@@ -105,23 +106,28 @@ namespace :lentil do
       args.with_defaults(:number_of_images => 1, :image_service => 'Instagram')
       num_to_harvest = args[:number_of_images].to_i
 
+      donor_agreement = Lentil::Engine::APP_CONFIG["donor_agreement_text"] || nil
+      raise "donor_agreement_text must be defined in application config" unless donor_agreement
+
       harvester = Lentil::InstagramHarvester.new
 
       # If you are running the test_image_files task regularly,
       # deleted images will eventually be ignored by this task.
       Lentil::Service.where(:name => args[:image_service]).first.images.approved.where("lentil_images.created_at < :week", {:week => 1.week.ago}).
               where(:do_not_request_donation => false).
-              where(:donor_agreement_submitted_date => nil).order("donor_agreement_failed ASC").
+              where(:donor_agreement_submitted_date => nil).
+              where("lentil_images.last_donor_agreement_failure_date < :week OR lentil_images.last_donor_agreement_failure_date IS NULL", {:week => 1.week.ago}).
+              order("donor_agreement_failed ASC").
               limit(num_to_harvest).each do |image|
+
         begin
-          donor_agreement = Lentil::Engine::APP_CONFIG["donor_agreement_text"] || nil
-          raise "donor_agreement_text must be defined in application config" unless donor_agreement
           harvester.leave_image_comment(image, donor_agreement)
           image.donor_agreement_submitted_date = DateTime.now
           image.save
           puts "Left donor agreement on image #{image.id}"
         rescue => e
           image.donor_agreement_failed += 1
+          image.last_donor_agreement_failure_date = DateTime.now
           image.save
           Rails.logger.error e.message
           puts e.message

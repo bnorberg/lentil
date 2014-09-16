@@ -78,8 +78,10 @@ function addfancybox() {
         prevEffect  : 'none',
         loop : false,
         minWidth : '250px',
+        type: 'image',
         helpers     : {
-            title   : { type : 'inside' }
+            title   : { type : 'inside' },
+            overlay : { locked : false }
         },
         afterLoad: function(current, previous) {
 
@@ -90,7 +92,7 @@ function addfancybox() {
         beforeShow  : function() {
             this.title = $(this.element).next(".text-overlay").html();
             imageId = $(this.element).parents("div").attr("id");
-            $(".fancybox-overlay, .fancybox-mobile").attr('id', imageId);
+            $(".fancybox-wrap").attr('id', imageId);
             pushimageurl(imageId);
         },
         afterShow : function() {
