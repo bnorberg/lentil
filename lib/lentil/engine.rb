@@ -8,7 +8,7 @@ module Lentil
 
       config_file = File.join(Rails.root, "/config/lentil_config.yml")
       if File.exist?(config_file)
-        APP_CONFIG = YAML.load_file(ERB.new(File.read(config_file)).result)[Rails.env]
+        APP_CONFIG = YAML.load_file(config_file)[Rails.env]
       end
     end
 
