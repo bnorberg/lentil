@@ -18,8 +18,8 @@ module Lentil
     # @options opts [String] :client_secret (Lentil::Engine::APP_CONFIG["instagram_client_secret"]) The Instagram client secret
     # @options opts [String] :access_token (nil) The optional Instagram client ID
     def configure_connection(opts = {})
-      opts['client_id'] ||= Lentil::Engine::APP_CONFIG["instagram_client_id"]
-      opts['client_secret'] ||= Lentil::Engine::APP_CONFIG["instagram_client_secret"]
+      opts['client_id'] ||= ENV["INSTAGRAM_CLIENT_ID"]
+      opts['client_secret'] ||= ENV["INSTAGRAM_CLIENT_SECRET"]
       opts['access_token'] ||= nil
 
       Instagram.configure do |config|
