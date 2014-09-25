@@ -23,8 +23,8 @@ module Lentil
       opts['access_token'] ||= nil
 
       Instagram.configure do |config|
-        config.client_id = opts['client_id']
-        config.client_secret = opts['client_secret']
+        config.client_id = APP_CONFIG["instagram_client_id"]
+        config.client_secret = APP_CONFIG["instagram_client_secret"]
 
         if (opts['access_token'])
           config.access_token = opts['access_token']
