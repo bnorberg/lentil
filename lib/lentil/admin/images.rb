@@ -6,6 +6,7 @@ if defined?(ActiveAdmin)
     config.per_page = 10
 
     filter :state, :as => :select, :collection => proc { Lentil::Image::States }
+    filter :media_type, :as => :select
     filter :user_user_name, :as => :string, :label => "Username"
     filter :user_full_name, :as => :string, :label => "Full Name"
     filter :staff_like, :as => :select
@@ -31,7 +32,11 @@ if defined?(ActiveAdmin)
 
     index do
       column "Image" do |image|
-        link_to(image_tag(image.image_url, :class => "moderation_thumbnail"), admin_lentil_image_path(image))
+        unless image.media_type == "video"
+            link_to(image_tag(image.image_url, :class => "moderation_thumbnail"), admin_lentil_image_path(image))
+        else
+            link_to(video_tag(image.video_url, controls: true, size: "250x250"),  admin_lentil_image_path(image))
+        end
       end
       column :id
       column :description
@@ -91,7 +96,11 @@ if defined?(ActiveAdmin)
           image.state_name
         end
         row :image do
-          link_to(image_tag(image.image_url), admin_lentil_image_path(image))
+			unless image.media_type == "video"
+				link_to(image_tag(image.image_url), admin_lentil_image_path(image))
+			else
+				video_tag(image.video_url, controls: true, size: "640x640")
+			end
         end
       end
       active_admin_comments
