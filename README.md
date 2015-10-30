@@ -15,9 +15,20 @@ Although we are using this gem in production, **this gem should be considered an
 
 ## Installation
 
-lentil has been tested under Ruby 1.9.3 and 2.1.0.
+lentil has been tested under Ruby 1.9.3 through 2.2.0.
 
-### Add lentil and therubyracer (or another ExecJS runtime) to your Gemfile and `bundle`
+> We are currently warning against using MySQL due to issues when encoding emoji. PostgreSQL is preferred, but if this is not an option, you may want to follow [this guide](http://tech.taskrabbit.com/blog/2014/04/24/active-record-mysql-and-emoji/).
+
+### Create a new Rails app with Rails 3.2.x
+
+```sh
+gem install rails -v '~> 3.2'
+rails _3.2.22_ new your_app_name
+cd your_app_name
+```
+> In the example above, `3.2.22` should be the version of Rails 3.x that is installed by the `gem` command.
+
+### Add lentil and therubyracer (or another ExecJS runtime) to your Gemfile and run `bundle update`
 
 ```ruby
 gem 'lentil'
@@ -39,6 +50,10 @@ bundle exec rails server
 ```
 
 Visit <http://localhost:3000>
+
+## Upgrading
+
+You may need to run `bundle exec rake lentil:install:migrations` to incorporate any new database migration files.
 
 ## Harvest Images
 
@@ -154,7 +169,7 @@ div.header {
 
 ### Embeddable iframe view
 
-This is a simple responsive non-interactive image grid that is intended to be embedded as an iframe. You can find this at `http://YOUR_HOST/images/iframe`.
+This is a simple responsive non-interactive image grid that is intended to be embedded as an iframe. You can find this at `http://YOUR_HOST/images/iframe`. Image sizes in the grid are determined using a range of possible image widths, with the smallest width defaulting to 64px and the largest width calculated as 1.5 times the smallest width. The smallest width may be configured by including an integer parameter to the iframe URL, for example: `http://YOUR_HOST/images/iframe?smallest_width=40`. Currently, values greater than 320 may result in loss of resolution.
 
 ### Large animated view
 
@@ -204,6 +219,10 @@ Edit `config/lentil_config.yml` and set `instagram_client_id` to the client ID a
 bundle exec rake image_services:instagram:fetch_by_tag
 ```
 
+## Heroku
+
+Documentation for deploying lentil to Heroku may be found in the [doc directory](doc/heroku.md).
+
 ## License
 
 See MIT-LICENSE
@@ -216,8 +235,10 @@ Submit a GitHub issue or contact lentil@lists.ncsu.edu.
 
 * Jason Casden
 * Bret Davidson
+* Aniket Lawande
 * Cory Lown
 * Jason Ronallo
+* Heidi Tebbe
 
 ## Additional project team members
 

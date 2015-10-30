@@ -1,4 +1,6 @@
 source "https://rubygems.org"
+require 'yaml'
+require 'erb'
 
 # Declare your gem's dependencies in lentil.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -14,6 +16,11 @@ end
 
 group :tools do
   gem 'guard-test'
+end
+
+group :test do
+  gem 'mysql2', '~> 0.3.20'
+  gem 'pg'
 end
 
 # Declare any dependencies that are still in development here instead of in

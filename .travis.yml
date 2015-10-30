@@ -1,15 +1,25 @@
 language: ruby
+sudo: false
+cache: bundler
 rvm:
-  - 1.9.3
-  - 2.1.4
-script: "bundle exec rake test"
+  - 1.9
+  - 2.1
+  - 2.2
+script: "RAILS_ENV=test bundle exec rake test"
+env:
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgresql
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 before_script:
+  - mysql -e 'create database lentil_test;'
+  - psql -c 'create database lentil_test;' -U postgres
   - "RAILS_ENV=test bundle exec rake db:create db:schema:load"
 notifications:
   email:
     - jmcasden@ncsu.edu
-slack:
-  secure: TZ+ysJCJtpO/92dvJanZhBrV41z3Ec45o73OqKyfxE9jdjOziI6axXWRNMYUoDh0O0CvFYtS5q7usXrj0fo9sPCxQovLZICdAfmOaKPwzWAmFIBpcBQuz1JPMpOSBsBi19zfzgutcIyE4Ov2VaNlQKnqjlFU/2HWO92PUV7SNmg=
+    - bddavids@ncsu.edu
+addons:
+  postgresql: "9.4"
