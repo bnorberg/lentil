@@ -35,7 +35,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'will_paginate', '~> 3.0.5' # adds paging feature to rails models
   s.add_dependency 'state_machine', "~> 1.2.0" # adds state machine for moderation
   s.add_dependency 'ruby-oembed', "~> 0.8.9" # Retrieve OEmbed data
-  s.add_dependency 'chosen-rails', "~> 1.2.0" # improved form select box
+  s.add_dependency 'select2-rails', "~> 4.0.0" # improved form select box
+  s.add_dependency 'compass-rails', "~> 2.0.5"
   s.add_dependency 'randumb', "~> 0.4.1" # pull random records from Active Record
   s.add_dependency 'lazing', "~> 0.1.1" # Lazy equivalents for many of the methods defined in Ruby's Enumerable module
   s.add_dependency 'sitemap_generator', "~> 5.1.0" # Generate sitemaps on deployment
